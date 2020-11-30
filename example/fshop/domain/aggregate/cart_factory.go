@@ -58,8 +58,10 @@ func (factory *CartFactory) NewCartItemQuery(userID int) (*CartItemQuery, error)
 	query := &CartItemQuery{}
 	query.User = *user
 	query.goodsMap = make(map[int]*entity.Goods)
+	if query.allCart, e = factory.CartRepo.FindAll(query.User.ID); e != nil {
+		return nil, e
+	}
 
-	query.allCart, e = factory.CartRepo.FindAll(query.User.ID)
 	for i := 0; i < len(query.allCart); i++ {
 		goodsEntity, e := factory.GoodsRepo.Get(query.allCart[i].GoodsID)
 		if e != nil {
